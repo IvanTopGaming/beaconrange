@@ -8,9 +8,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.ConduitRenderer;
-import net.minecraft.client.renderer.blockentity.state.CondiutRenderState;
+import net.minecraft.client.renderer.blockentity.state.ConduitRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ConduitBlockEntity;
@@ -32,10 +32,10 @@ public class MixinConduitRenderer {
     @Unique
     private final Map<BlockPos, Vector3f> conduitColors = new HashMap<>();
 
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/CondiutRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/ConduitRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
             at = @At("HEAD"))
     public void onSubmitConduit(
-            CondiutRenderState conduitRenderState,
+            ConduitRenderState conduitRenderState,
             PoseStack poseStack,
             SubmitNodeCollector submitNodeCollector,
             CameraRenderState cameraRenderState,

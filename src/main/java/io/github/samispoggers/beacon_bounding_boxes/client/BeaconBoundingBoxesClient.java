@@ -1,15 +1,15 @@
 package io.github.samispoggers.beacon_bounding_boxes.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.github.samispoggers.beacon_bounding_boxes.BeaconBoundingBoxes;
 import io.github.samispoggers.beacon_bounding_boxes.config.BeaconBoundingBoxesConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.glfw.GLFW;
 
 public class BeaconBoundingBoxesClient implements ClientModInitializer {
 
@@ -23,19 +23,19 @@ public class BeaconBoundingBoxesClient implements ClientModInitializer {
     public void onInitializeClient() {
         BeaconBoundingBoxesConfig.load();
 
-        KeyMapping.Category category = new KeyMapping.Category(
+        KeyMapping.Category category = KeyMapping.Category.register(
                 Identifier.fromNamespaceAndPath(BeaconBoundingBoxes.MOD_ID, "keybinds")
         );
 
-        toggleBeaconKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        toggleBeaconKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beacon_bounding_boxes.toggle_beacon",
-                GLFW.GLFW_KEY_G,
+                InputConstants.KEY_G,
                 category
         ));
 
-        toggleConduitKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        toggleConduitKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beacon_bounding_boxes.toggle_conduit",
-                GLFW.GLFW_KEY_H,
+                InputConstants.KEY_H,
                 category
         ));
 
@@ -50,7 +50,7 @@ public class BeaconBoundingBoxesClient implements ClientModInitializer {
                         );
 
                 if (client.player != null) {
-                    client.player.displayClientMessage(message, true);
+                    client.player.sendOverlayMessage(message);
                 }
             }
 
@@ -64,7 +64,7 @@ public class BeaconBoundingBoxesClient implements ClientModInitializer {
                         );
 
                 if (client.player != null) {
-                    client.player.displayClientMessage(message, true);
+                    client.player.sendOverlayMessage(message);
                 }
             }
         });

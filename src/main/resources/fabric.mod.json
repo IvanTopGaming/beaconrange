@@ -7,7 +7,6 @@
   "authors": [],
   "contact": {},
   "license": "All-Rights-Reserved",
-  "icon": "assets/beacon_bounding_boxes/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [

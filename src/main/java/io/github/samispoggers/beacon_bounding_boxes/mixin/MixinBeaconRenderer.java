@@ -1,23 +1,17 @@
 package io.github.samispoggers.beacon_bounding_boxes.mixin;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import io.github.samispoggers.beacon_bounding_boxes.client.BeaconBoundingBoxesClient;
 import io.github.samispoggers.beacon_bounding_boxes.config.BeaconBoundingBoxesConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.blockentity.state.BeaconRenderState;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,26 +34,9 @@ import java.util.Random;
 public abstract class MixinBeaconRenderer {
 
     @Unique
-    private static final RenderPipeline TRANSLUCENT_BOX_PIPELINE =
-            RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
-                    .withLocation("pipeline/translucent_box")
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-                    .withCull(false)
-                    .withDepthWrite(false)
-                    .build();
-
-    @Unique
-    private static final RenderType TRANSLUCENT_BOX = RenderType.create(
-            "beacon_bounding_boxes:translucent_box",
-            RenderSetup.builder(
-                    TRANSLUCENT_BOX_PIPELINE
-            ).createRenderSetup()
-    );
-
-    @Unique
     private final Map<BlockPos, Vector3f> beaconColors = new HashMap<>();
 
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/BeaconRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/BeaconRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
             at = @At("HEAD"))
     private void onSubmitBeacon(
             BeaconRenderState beaconRenderState,
@@ -102,7 +79,7 @@ public abstract class MixinBeaconRenderer {
         poseStack.translate(0.5, 0.5, 0.5); // Center on the beacon block
 
         if (BeaconBoundingBoxesConfig.get().boxMode == BeaconBoundingBoxesConfig.BoxMode.BOX) {
-            submitNodeCollector.submitCustomGeometry(poseStack, TRANSLUCENT_BOX, (pose, consumer) ->
+            submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.debugFilledBox(), (pose, consumer) ->
                     drawBoxFaces(pose, consumer, box, color.x(), color.y(), color.z(), 0.3f)
             );
         }
